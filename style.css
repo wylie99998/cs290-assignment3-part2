@@ -9,10 +9,12 @@ input[type="radio"]{
 
 #gist-list{
 	background-color: #149189;
+	float: left;
     
 }
 
 #favorite-list{
 	background-color: #B561D4;
     
+    float: right;
 }

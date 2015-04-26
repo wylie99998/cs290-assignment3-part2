@@ -1,13 +1,14 @@
 
 //fetch gist data from github using its api
 var originalGistList = [];
-
+var favgits = 0; 
 var li = document.createElement('li');
+var fli = document.createElement('li');
 //if(document.getElementById("fetch").onclick) //= function () {fetchData};
 var lang = 'SQL';
 //else
 //;
-var fetchData = function(){
+var fetchData = function(input){
 	var req = new XMLHttpRequest();
 	if(!req){
 		throw 'error. unable to create xmlhttprequest';
@@ -27,6 +28,10 @@ var fetchData = function(){
           var gistInput = JSON.parse(this.responseText);
           originalGistList = gistInput;   //parse here?
           for(var i =0; i< 30; i++){
+          	if(isLang(originalGistList[i].files, input))
+          		console.log("hi");
+          	else 
+          		console.loh("no");
 	var dl = document.createElement('dl');
 	var entry = generateGistHtml(originalGistList[i]);
 	dl.appendChild(entry.dt);
@@ -68,25 +73,83 @@ var generateGistHtml = function(gist) {
 
 
 
-var findById = function(id) {
+var findById = function(idnum) {
 	//iterate over list of gists to find the gist with id equals to input id
 	//return that gist
+	for(var j =0; j<30; j++){
+		if(originalGistList[j].id == idnum)
+			return originalGistList[j];
+	}
 }
 function generateFbutton(gist){
 var fbutton = document.createElement("button");
-fbutton.style.cssFloat = "left";
+fbutton.style.cssFloat = "top";
 fbutton.innerHTML = "+";
 fbutton.setAttribute("gistId", gist.id);
 fbutton.onclick = function(){
 	var gistId = this.getAttribute("gistId"); //this is what you have saved before
 	var toBeFavoredGist = findById(gistId);
+
+	
+    this.parentNode.style.visibility = "hidden";
+    //toBeFavoredGist.setAttribute("favorited", true);
+    localStorage.setItem(favgits, JSON.stringify(toBeFavoredGist));
+    favgits ++;
+    //document.getElementById("favorite-list").appendChild
+    
+    var dl = document.createElement('dl');
+	var entry = generateGistHtml(toBeFavoredGist);
+	dl.appendChild(entry.dt);
+	dl.appendChild(entry.dd);
+    dl.appendChild(generateexFbutton(toBeFavoredGist));
+    fli.appendChild(dl);
+    
+    document.getElementById('favorite-list').appendChild(fli);
+    
 	//here you add the gist to your favorite list in the localStorage and remove it from the gist list and add it to favorite list
+    
 }
 //document.getElementById('gist-list').appendChild(fbutton);
 return fbutton;
 }
 //favorite button next to gist html elements
+function generateexFbutton(gist){
+	var exfbutton = document.createElement("button");
+exfbutton.style.cssFloat = "top";
+exfbutton.innerHTML = "-";
+exfbutton.setAttribute("gistId", gist.id);
+exfbutton.onclick = function(){
+	this.parentNode.style.visibility = "hidden";
+	var gistId = this.getAttribute("gistId"); //this is what you have saved before
+	var toBeFavoredGist = findById(gistId);
+ var dl = document.createElement('dl');
 
+	var entry = generateGistHtml(toBeFavoredGist);
+	dl.appendChild(entry.dt);
+	dl.appendChild(entry.dd);
+    dl.appendChild(generateFbutton(toBeFavoredGist));
+    li.appendChild(dl);
+    
+    document.getElementById('gist-list').appendChild(li);
+    var count =0;
+    do{
+		var temp = localStorage.getItem(count);
+		if(temp === null)
+			break;
+		else
+		{
+			temp = JSON.parse(temp);
+			count ++;
+			if(temp.id == gist.id)
+				localStorage.setItem(count, null);
+    
+    
+		}
+}while(!(temp === null));
+
+}
+return exfbutton;
+}
 //favorite list remove button
 
 //select language (optional)
@@ -102,12 +165,59 @@ function urlToString(obj){
 window.onload = function(){
 	var favoriteStr = localStorage.getItem('favoriteString');
 	if(favoriteStr === null){
-		var fav = {};
-		//localStorage.setItem('favoriteString', JSON.stringify(fav));
+		var fav = "hi";
+		localStorage.setItem('favoriteString', JSON.stringify(fav));
 	}
+	else
+	{
+
+		do{
+		var temp = localStorage.getItem(favgits);
+		if(temp === null)
+			break;
+		else
+		{
+			temp = JSON.parse(temp);
+			favgits ++;
+			var dl = document.createElement('dl');
+	        var entry = generateGistHtml(temp);
+	        dl.appendChild(entry.dt);
+	        dl.appendChild(entry.dd);
+            dl.appendChild(generateFbutton(temp));
+            fli.appendChild(dl);
+    
+    document.getElementById('favorite-list').appendChild(fli);
+		}
+}while(!(temp === null));
+	}
+	
+    
+	document.getElementById("fetch").onclick = function(){
+		var input = document.getElementsByName("lang");
+		for(var i =0; i<=4; i++){
+			if(input[i].checked == true){
+				input = input[i].value;
+			    break;
+			}
+		}
+	fetchData(input);
+};
 }
-//var ul = document.getElementById('gist-list');
-var r = fetchData();
 
+function isLang(str, lang){
+	/*str = JSON.stringify(str);
+   
+	str = str.split(",");
 
-var x = [];
+	for(var j=0; j<str.length; j++){
+        var z = JSON.stringify(str[j]);
+        z = z.split(":");
+        if( z[0] == "language")
+        	if(z[1] == lang)
+        		return true;
+        		else 
+        			return false;
+	}
+	*/
+	return true;
+}
