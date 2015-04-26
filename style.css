@@ -1,0 +1,18 @@
+tab{padding-left: 5em; }
+
+input[type="button"]{
+	background: #15AAE6; width: 7em; color: white;
+}
+input[type="radio"]{
+
+}
+
+#gist-list{
+	background-color: #149189;
+    
+}
+
+#favorite-list{
+	background-color: #B561D4;
+    
+}
