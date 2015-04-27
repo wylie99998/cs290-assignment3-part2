@@ -1,0 +1,16 @@
+Start: Wed, 22 Apr 2015 18:05:00 -0800
+End: Wed, 22 Apr 2015 21:45:00 -0800
+Tasks: During this period I made my inital commit and completed the html file.  
+I also started the ajax code and looking at JSON objects.
+
+Start: Sat, 25 Apr 2015 13:15:00 -0800
+End: Sat, 225 Apr 2015 17:45:00 -0800
+Tasks: During this period I continued working on trying to parse the language of the 
+GISTS and failed.  I was unable to figure out how to parse the JSON within the JSON without
+an error.  I also finished the styling for the page and made significant progress on the
+fetch list, and the favorite list local storage feature.  
+
+Start: Sun, 26 Apr 2015 11:15:00 -0800
+End: Sun, 26 Apr 2015 22:45:00 -0800
+Tasks: During this period I worked on bugs in the favourites list and switched to using an array
+rather than saving each gist separately in the local storage.      
