@@ -63,11 +63,14 @@ var generateGistHtml = function(gist) {
 	//This function will be used in the previous step function (fetchData)
     var dt = document.createElement('dt');
 	var dd = document.createElement('dd');
+	if(!(gist === null) && !(gist ===undefined)){
 	dt.innerText = gist.description;
 	if(dt.innerText == "")
 	dt.innerText = "No description was given";
-	dd.innerText = gist.url;
+	dd.innerHTML = '<a href= "' + gist.url +'">' + gist.url;
+    }
     return {'dt':dt, 'dd':dd};
+
 }
 
 
@@ -76,25 +79,43 @@ var generateGistHtml = function(gist) {
 var findById = function(idnum) {
 	//iterate over list of gists to find the gist with id equals to input id
 	//return that gist
+	if(originalGistList[0] === undefined){
+		for(var k =0; k < 30; k++){
+			var t = localStorage.getItem(k);
+			if(!(t === null || t ===undefined))
+				{
+					if(t.id == idnum)
+						return t;
+				}
+
+		}
+			return null;
+		}
 	for(var j =0; j<30; j++){
+
 		if(originalGistList[j].id == idnum)
 			return originalGistList[j];
 	}
 }
 function generateFbutton(gist){
+
 var fbutton = document.createElement("button");
 fbutton.style.cssFloat = "top";
 fbutton.innerHTML = "+";
+if(gist === undefined || gist === null)
+		return fbutton;
 fbutton.setAttribute("gistId", gist.id);
 fbutton.onclick = function(){
 	var gistId = this.getAttribute("gistId"); //this is what you have saved before
 	var toBeFavoredGist = findById(gistId);
-
-	
-    this.parentNode.style.visibility = "hidden";
+    this.style.display = "none";
+   //this.parentNode.style.visibility = "hidden";
+    this.parentNode.style.display = "none";
     //toBeFavoredGist.setAttribute("favorited", true);
     localStorage.setItem(favgits, JSON.stringify(toBeFavoredGist));
+
     favgits ++;
+    localStorage.setItem('num', favgits);
     //document.getElementById("favorite-list").appendChild
     
     var dl = document.createElement('dl');
@@ -114,38 +135,43 @@ return fbutton;
 }
 //favorite button next to gist html elements
 function generateexFbutton(gist){
-	var exfbutton = document.createElement("button");
+	if(gist ===  undefined || gist === null)
+		return null;
+var exfbutton = document.createElement("button");
 exfbutton.style.cssFloat = "top";
 exfbutton.innerHTML = "-";
 exfbutton.setAttribute("gistId", gist.id);
 exfbutton.onclick = function(){
-	this.parentNode.style.visibility = "hidden";
+	//this.parentNode.style.visibility = "hidden";
+	this.parentNode.style.display = "none";
 	var gistId = this.getAttribute("gistId"); //this is what you have saved before
 	var toBeFavoredGist = findById(gistId);
- var dl = document.createElement('dl');
+    var dl = document.createElement('dl');
 
 	var entry = generateGistHtml(toBeFavoredGist);
 	dl.appendChild(entry.dt);
 	dl.appendChild(entry.dd);
     dl.appendChild(generateFbutton(toBeFavoredGist));
     li.appendChild(dl);
-    
+    //fbutton.style.display = "visible";
     document.getElementById('gist-list').appendChild(li);
     var count =0;
+    var c = localStorage.getItem('num');
     do{
 		var temp = localStorage.getItem(count);
 		if(temp === null)
-			break;
+			count++;
 		else
 		{
 			temp = JSON.parse(temp);
 			count ++;
-			if(temp.id == gist.id)
+			if(!(temp === null))
+			if(temp.id == gistId){
 				localStorage.setItem(count, null);
-    
-    
+                localStorage.setItem('num', (favgits-1));
+               }
 		}
-}while(!(temp === null));
+}while(c > count);
 
 }
 return exfbutton;
@@ -167,14 +193,15 @@ window.onload = function(){
 	if(favoriteStr === null){
 		var fav = "hi";
 		localStorage.setItem('favoriteString', JSON.stringify(fav));
+		localStorage.setItem('num', 0);
 	}
 	else
 	{
-
+        var c = localStorage.getItem('num');
 		do{
 		var temp = localStorage.getItem(favgits);
 		if(temp === null)
-			break;
+			favgits++;
 		else
 		{
 			temp = JSON.parse(temp);
@@ -188,7 +215,7 @@ window.onload = function(){
     
     document.getElementById('favorite-list').appendChild(fli);
 		}
-}while(!(temp === null));
+}while(favgits < c);
 	}
 	
     

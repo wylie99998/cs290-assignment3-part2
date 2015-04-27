@@ -12,9 +12,22 @@ input[type="radio"]{
 	float: left;
     
 }
-
+#fav{
+	float: right;
+}
 #favorite-list{
 	background-color: #B561D4;
     
     float: right;
 }
+dl{
+	float: top;
+}
+
+a:visited{
+  color:green;
+}
+
+a:link{
+	color:blue;
+	}
