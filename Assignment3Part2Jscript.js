@@ -1,6 +1,7 @@
 
 //fetch gist data from github using its api
 var originalGistList = [];
+var favGistList = [];
 var favgits = 0; 
 var li = document.createElement('li');
 var fli = document.createElement('li');
@@ -80,18 +81,19 @@ var findById = function(idnum) {
 	//iterate over list of gists to find the gist with id equals to input id
 	//return that gist
 	if(originalGistList[0] === undefined){
-		for(var k =0; k < 30; k++){
-			var t = localStorage.getItem(k);
+		var t = JSON.parse(localStorage.getItem('favArray'));
+		for(var k =0; k < t.length; k++){
+			
 			if(!(t === null || t ===undefined))
 				{
-					if(t.id == idnum)
-						return t;
+					if(t[k].id == idnum)
+						return t[k];
 				}
 
 		}
 			return null;
 		}
-	for(var j =0; j<30; j++){
+	for(var j =0; j<originalGistList.length; j++){
 
 		if(originalGistList[j].id == idnum)
 			return originalGistList[j];
@@ -116,6 +118,9 @@ fbutton.onclick = function(){
 
     favgits ++;
     localStorage.setItem('num', favgits);
+    favGistList[favGistList.length] = toBeFavoredGist;    
+    localStorage.setItem('favArray', JSON.stringify(favGistList));
+    
     //document.getElementById("favorite-list").appendChild
     
     var dl = document.createElement('dl');
@@ -147,13 +152,26 @@ exfbutton.onclick = function(){
 	var gistId = this.getAttribute("gistId"); //this is what you have saved before
 	var toBeFavoredGist = findById(gistId);
     var dl = document.createElement('dl');
-
+    
 	var entry = generateGistHtml(toBeFavoredGist);
 	dl.appendChild(entry.dt);
 	dl.appendChild(entry.dd);
     dl.appendChild(generateFbutton(toBeFavoredGist));
     li.appendChild(dl);
     //fbutton.style.display = "visible";
+    if(originalGistList[0] === undefined){
+    	var t = JSON.parse(localStorage.getItem('favArray'));
+    for(var index =0; index < t.length; index++){
+    	if(t[index].id == toBeFavoredGist.id){
+    		for(var z = index;z<t.length;z++)
+    			t[z] = t[z+1]; 
+             t[t.length] = null;
+             break;
+    }
+
+}
+localStorage.setItem('favArray', JSON.stringify(t));
+}
     document.getElementById('gist-list').appendChild(li);
     var count =0;
     var c = localStorage.getItem('num');
@@ -194,28 +212,34 @@ window.onload = function(){
 		var fav = "hi";
 		localStorage.setItem('favoriteString', JSON.stringify(fav));
 		localStorage.setItem('num', 0);
+		localStorage.setItem('favArray', favGistList);
 	}
 	else
 	{
         var c = localStorage.getItem('num');
+        var favGistList = JSON.parse(localStorage.getItem('favArray'));
+        var i=0;
 		do{
-		var temp = localStorage.getItem(favgits);
+		//var temp = localStorage.getItem(favgits);
+		var temp = favGistList[i];
 		if(temp === null)
-			favgits++;
+			i++; //favgits++;
 		else
 		{
-			temp = JSON.parse(temp);
+			//temp = JSON.parse(temp);
+			i++;
 			favgits ++;
 			var dl = document.createElement('dl');
 	        var entry = generateGistHtml(temp);
 	        dl.appendChild(entry.dt);
 	        dl.appendChild(entry.dd);
-            dl.appendChild(generateFbutton(temp));
+            dl.appendChild(generateexFbutton(temp));
             fli.appendChild(dl);
     
     document.getElementById('favorite-list').appendChild(fli);
 		}
-}while(favgits < c);
+}while(favGistList.length > i)
+//while(favgits < c);
 	}
 	
     
